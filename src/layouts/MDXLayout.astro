@@ -1,0 +1,127 @@
+---
+import BaseLayout from './BaseLayout.astro';
+
+interface Props {
+  frontmatter: {
+    title: string;
+    description?: string;
+    pubDate?: string;
+    author?: string;
+  };
+}
+
+const { frontmatter } = Astro.props;
+const { title, description, pubDate, author } = frontmatter;
+---
+
+<BaseLayout title={title} description={description}>
+  <article class="article">
+    <header class="article__header container">
+      <p class="section__eyebrow">Insights</p>
+      <h1>{title}</h1>
+      {
+        description && (
+          <p class="article__lead">{description}</p>
+        )
+      }
+      <p class="article__meta">
+        {author && <span>{author}</span>}
+        {author && pubDate && <span aria-hidden="true"> · </span>}
+        {
+          pubDate && (
+            <time datetime={pubDate}>
+              {new Date(pubDate).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+              })}
+            </time>
+          )
+        }
+      </p>
+    </header>
+    <div class="article__body container prose">
+      <slot />
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .article {
+    padding-block: var(--space-xl) var(--space-2xl);
+  }
+
+  .article__header {
+    margin-bottom: var(--space-lg);
+    max-width: 46rem;
+  }
+
+  .article__header h1 {
+    font-size: clamp(2.2rem, 5vw, 3.4rem);
+    max-width: 16ch;
+  }
+
+  .article__lead {
+    font-size: 1.15rem;
+    color: var(--color-text-muted);
+    max-width: 40rem;
+  }
+
+  .article__meta {
+    margin-top: var(--space-md);
+    color: var(--color-text-muted);
+    font-size: 0.92rem;
+  }
+
+  .article__body {
+    max-width: 42rem;
+  }
+
+  .prose :global(h2) {
+    margin-top: 2rem;
+    font-size: 1.45rem;
+  }
+
+  .prose :global(h3) {
+    margin-top: 1.5rem;
+    font-size: 1.15rem;
+  }
+
+  .prose :global(ul),
+  .prose :global(ol) {
+    padding-left: 1.2rem;
+    color: var(--color-text);
+  }
+
+  .prose :global(li) {
+    margin-bottom: 0.4rem;
+  }
+
+  .prose :global(blockquote) {
+    margin: 1.5rem 0;
+    padding: 0.75rem 0 0.75rem 1.1rem;
+    border-left: 3px solid var(--color-sea-glow);
+    color: var(--color-ink-soft);
+    font-style: italic;
+  }
+
+  .prose :global(code) {
+    font-size: 0.92em;
+    background: rgba(15, 118, 110, 0.08);
+    padding: 0.1em 0.35em;
+    border-radius: 0.25rem;
+  }
+
+  .prose :global(pre) {
+    padding: 1rem 1.1rem;
+    overflow-x: auto;
+    border-radius: var(--radius);
+    background: var(--color-ink);
+    color: #e8f0f4;
+  }
+
+  .prose :global(pre code) {
+    background: transparent;
+    padding: 0;
+  }
+</style>

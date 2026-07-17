@@ -1,0 +1,84 @@
+---
+interface Service {
+  name: string;
+  summary: string;
+  outcomes: string[];
+}
+
+interface Props {
+  services: Service[];
+}
+
+const { services } = Astro.props;
+---
+
+<div class="service-list">
+  {
+    services.map((service, index) => (
+      <article class="service" style={`--delay: ${index * 80}ms`}>
+        <div class="service__index" aria-hidden="true">{String(index + 1).padStart(2, '0')}</div>
+        <div class="service__body">
+          <h3>{service.name}</h3>
+          <p>{service.summary}</p>
+          <ul>
+            {service.outcomes.map((item) => (
+              <li>{item}</li>
+            ))}
+          </ul>
+        </div>
+      </article>
+    ))
+  }
+</div>
+
+<style>
+  .service-list {
+    display: grid;
+    gap: 0;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .service {
+    display: grid;
+    grid-template-columns: 4.5rem 1fr;
+    gap: 1rem;
+    padding: 1.6rem 0;
+    border-bottom: 1px solid var(--color-border);
+    animation: fade-up 0.65s var(--ease-out) both;
+    animation-delay: var(--delay);
+  }
+
+  .service__index {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--color-sea);
+  }
+
+  .service__body h3 {
+    margin: 0 0 0.4rem;
+    font-size: 1.25rem;
+  }
+
+  .service__body p {
+    margin: 0 0 0.75rem;
+    color: var(--color-text-muted);
+  }
+
+  .service__body ul {
+    margin: 0;
+    padding-left: 1.1rem;
+    color: var(--color-ink-soft);
+  }
+
+  .service__body li + li {
+    margin-top: 0.25rem;
+  }
+
+  @media (max-width: 640px) {
+    .service {
+      grid-template-columns: 1fr;
+      gap: 0.35rem;
+    }
+  }
+</style>

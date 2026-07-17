@@ -1,0 +1,120 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const companyName = import.meta.env.PUBLIC_COMPANY_NAME || 'ABC Company';
+
+const modules = import.meta.glob('./*.{md,mdx}', { eager: true }) as Record<
+  string,
+  {
+    frontmatter: {
+      title: string;
+      description?: string;
+      pubDate?: string;
+      author?: string;
+    };
+  }
+>;
+
+const articles = Object.entries(modules)
+  .map(([path, mod]) => {
+    const slug = path.replace(/^\.\//, '').replace(/\.mdx?$/, '');
+    return {
+      title: mod.frontmatter.title,
+      description: mod.frontmatter.description || '',
+      pubDate: mod.frontmatter.pubDate || '',
+      author: mod.frontmatter.author || '',
+      href: `/blog/${slug}/`,
+    };
+  })
+  .filter((post) => Boolean(post.title))
+  .sort((a, b) => (a.pubDate < b.pubDate ? 1 : -1));
+---
+
+<BaseLayout
+  title={`Blog · ${companyName}`}
+  description={`MDX articles from the ${companyName} teaching demo.`}
+>
+  <section class="section">
+    <div class="container">
+      <p class="section__eyebrow">Blog</p>
+      <h1 class="blog-title">Notes from the demo workshop</h1>
+      <p class="section__lead">
+        These posts are written in MDX. Open any file under <code>src/pages/blog/</code> to edit
+        frontmatter and body content.
+      </p>
+
+      <ul class="post-list">
+        {
+          articles.map((article) => (
+            <li>
+              <article class="post">
+                <p class="post__meta">
+                  {article.pubDate && (
+                    <time datetime={article.pubDate}>
+                      {new Date(article.pubDate).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                      })}
+                    </time>
+                  )}
+                  {article.author && <span> · {article.author}</span>}
+                </p>
+                <h2>
+                  <a href={article.href}>{article.title}</a>
+                </h2>
+                {article.description && <p>{article.description}</p>}
+              </article>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .blog-title {
+    font-size: clamp(2.2rem, 5vw, 3.4rem);
+    max-width: 14ch;
+  }
+
+  .post-list {
+    list-style: none;
+    margin: var(--space-lg) 0 0;
+    padding: 0;
+    display: grid;
+    gap: 0;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .post {
+    padding: 1.5rem 0;
+    border-bottom: 1px solid var(--color-border);
+    animation: fade-up 0.65s var(--ease-out) both;
+  }
+
+  .post__meta {
+    margin: 0 0 0.4rem;
+    font-size: 0.88rem;
+    color: var(--color-text-muted);
+  }
+
+  .post h2 {
+    margin: 0 0 0.4rem;
+    font-size: 1.35rem;
+  }
+
+  .post h2 a {
+    text-decoration: none;
+    color: var(--color-ink);
+  }
+
+  .post h2 a:hover {
+    color: var(--color-sea-deep);
+  }
+
+  .post p:last-child {
+    color: var(--color-text-muted);
+  }
+</style>

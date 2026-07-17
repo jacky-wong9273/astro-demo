@@ -1,0 +1,76 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import FeatureCard from '../components/FeatureCard.astro';
+import CTA from '../components/CTA.astro';
+
+const companyName = import.meta.env.PUBLIC_COMPANY_NAME || 'ABC Company';
+
+const features = [
+  {
+    icon: '◇',
+    title: 'Astro components',
+    description:
+      'Reusable .astro building blocks for navigation, heroes, services, and calls to action.',
+  },
+  {
+    icon: '▣',
+    title: 'MDX content',
+    description:
+      'Write blog posts in Markdown with embedded components — great for docs and marketing copy.',
+  },
+  {
+    icon: '◎',
+    title: 'Static output',
+    description:
+      'Build once with npm, then host the dist/ folder on Amazon S3 for continuous deployment.',
+  },
+];
+---
+
+<BaseLayout
+  title={`${companyName} — Digital products that feel human`}
+  description={`${companyName} is a fictioned demo company built with Astro and MDX for web development students.`}
+>
+  <Hero />
+
+  <section class="section">
+    <div class="container">
+      <p class="section__eyebrow">What this demo teaches</p>
+      <h2 class="section__title">A complete static site students can read and remix</h2>
+      <p class="section__lead">
+        {companyName} is fictional. The codebase is real — pages, layouts, MDX posts, environment
+        variables, and a GitHub Actions pipeline that publishes to AWS S3.
+      </p>
+
+      <div class="feature-grid">
+        {
+          features.map((feature) => (
+            <FeatureCard
+              icon={feature.icon}
+              title={feature.title}
+              description={feature.description}
+            />
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <CTA />
+</BaseLayout>
+
+<style>
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(1.5rem, 4vw, 2.75rem);
+    margin-top: var(--space-lg);
+  }
+
+  @media (max-width: 800px) {
+    .feature-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

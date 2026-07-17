@@ -1,0 +1,103 @@
+---
+const companyName = import.meta.env.PUBLIC_COMPANY_NAME || 'ABC Company';
+const contactEmail = import.meta.env.PUBLIC_CONTACT_EMAIL || 'hello@abccompany.example';
+---
+
+<form class="contact-form" method="post" action={`mailto:${contactEmail}`} enctype="text/plain">
+  <div class="contact-form__row">
+    <label for="name">Name</label>
+    <input id="name" name="name" type="text" autocomplete="name" required placeholder="Your name" />
+  </div>
+
+  <div class="contact-form__row">
+    <label for="email">Email</label>
+    <input
+      id="email"
+      name="email"
+      type="email"
+      autocomplete="email"
+      required
+      placeholder="you@example.com"
+    />
+  </div>
+
+  <div class="contact-form__row">
+    <label for="topic">Topic</label>
+    <select id="topic" name="topic" required>
+      <option value="">Choose one</option>
+      <option>New website</option>
+      <option>Astro workshop</option>
+      <option>CI/CD help</option>
+      <option>Something else</option>
+    </select>
+  </div>
+
+  <div class="contact-form__row">
+    <label for="message">Message</label>
+    <textarea
+      id="message"
+      name="message"
+      rows="5"
+      required
+      placeholder={`Tell ${companyName} what you want to learn or build…`}></textarea>
+  </div>
+
+  <button class="btn btn--primary" type="submit">Send message</button>
+  <p class="contact-form__note">
+    Demo form opens your mail client via <code>mailto:</code>. In a production app you would
+    post to an API or form service.
+  </p>
+</form>
+
+<style>
+  .contact-form {
+    display: grid;
+    gap: 1rem;
+    max-width: 32rem;
+    padding: 1.5rem;
+    background: var(--color-surface-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: 0.65rem;
+    box-shadow: var(--shadow-soft);
+  }
+
+  .contact-form__row {
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  label {
+    font-weight: 700;
+    font-size: 0.88rem;
+    color: var(--color-ink);
+  }
+
+  input,
+  select,
+  textarea {
+    width: 100%;
+    padding: 0.75rem 0.85rem;
+    border: 1px solid rgba(14, 23, 31, 0.16);
+    border-radius: var(--radius);
+    font: inherit;
+    color: var(--color-text);
+    background: #fff;
+  }
+
+  input:focus,
+  select:focus,
+  textarea:focus {
+    outline: 2px solid rgba(15, 118, 110, 0.35);
+    border-color: var(--color-sea);
+  }
+
+  .contact-form__note {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+  }
+
+  code {
+    font-size: 0.9em;
+  }
+</style>

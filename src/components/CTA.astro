@@ -1,0 +1,51 @@
+---
+interface Props {
+  title?: string;
+  text?: string;
+  ctaLabel?: string;
+  ctaHref?: string;
+}
+
+const {
+  title = 'Ready to ship something students can learn from?',
+  text = 'Explore this Astro + MDX demo, then deploy it to Amazon S3 with GitHub Actions.',
+  ctaLabel = 'Open the contact page',
+  ctaHref = '/contact/',
+} = Astro.props;
+---
+
+<section class="cta">
+  <div class="cta__inner container">
+    <h2>{title}</h2>
+    <p>{text}</p>
+    <a class="btn btn--light" href={ctaHref}>{ctaLabel}</a>
+  </div>
+</section>
+
+<style>
+  .cta {
+    padding-block: var(--space-xl);
+  }
+
+  .cta__inner {
+    padding: clamp(2rem, 5vw, 3.25rem);
+    border-radius: 0.75rem;
+    background:
+      radial-gradient(600px 220px at 90% 10%, rgba(20, 184, 166, 0.28), transparent 60%),
+      linear-gradient(135deg, #12303a 0%, #0f4a45 100%);
+    color: #e8f0f4;
+    animation: fade-up 0.7s var(--ease-out) both;
+  }
+
+  .cta__inner h2 {
+    color: #fff;
+    max-width: 18ch;
+    font-size: clamp(1.6rem, 3vw, 2.2rem);
+  }
+
+  .cta__inner p {
+    max-width: 36rem;
+    margin-bottom: 1.35rem;
+    color: rgba(232, 240, 244, 0.82);
+  }
+</style>

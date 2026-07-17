@@ -1,0 +1,33 @@
+---
+title: "Building pages with Astro components"
+description: "A student-friendly tour of layouts, slots, props, and when to reach for MDX."
+pubDate: "2026-03-12"
+author: "Blake Okonkwo"
+layout: ../../layouts/MDXLayout.astro
+---
+
+import Callout from '../../components/Callout.astro';
+
+Astro components are HTML-first. You write markup with a frontmatter script, pass props, and compose pages from small pieces.
+
+## Layouts and slots
+
+`BaseLayout.astro` wraps every marketing page with the shared header and footer. Child pages fill the default `<slot />` with their own sections.
+
+```astro
+<BaseLayout title="About">
+  <section>...</section>
+</BaseLayout>
+```
+
+## Props keep demos flexible
+
+Components like `Hero.astro` and `CTA.astro` accept optional props so the same building block can serve different pages without copy-paste.
+
+## When MDX helps
+
+Use `.astro` for structured UI. Use `.mdx` when authors need to write long-form text and occasionally drop in a component.
+
+<Callout title="Classroom tip" tone="info">
+  Ask students to add a new prop to `FeatureCard.astro` and pass it from the homepage. That single change reinforces props, imports, and rebuilds.
+</Callout>

@@ -1,0 +1,79 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ContactForm from '../components/ContactForm.astro';
+
+const companyName = import.meta.env.PUBLIC_COMPANY_NAME || 'ABC Company';
+const contactEmail = import.meta.env.PUBLIC_CONTACT_EMAIL || 'hello@abccompany.example';
+---
+
+<BaseLayout
+  title={`Contact ${companyName}`}
+  description={`Get in touch with the ${companyName} demo team.`}
+>
+  <section class="section contact">
+    <div class="container contact__grid">
+      <div>
+        <p class="section__eyebrow">Contact</p>
+        <h1>Say hello to {companyName}</h1>
+        <p class="section__lead">
+          This page demonstrates a simple interactive form component. For a real project you would
+          connect it to a serverless function or form backend.
+        </p>
+        <dl class="contact__meta">
+          <div>
+            <dt>Email</dt>
+            <dd><a href={`mailto:${contactEmail}`}>{contactEmail}</a></dd>
+          </div>
+          <div>
+            <dt>Office (fictioned)</dt>
+            <dd>120 Harbor Lane, Demo City</dd>
+          </div>
+          <div>
+            <dt>Hours</dt>
+            <dd>Mon–Fri, 9:00–17:00</dd>
+          </div>
+        </dl>
+      </div>
+
+      <ContactForm />
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .contact__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-xl);
+    align-items: start;
+  }
+
+  .contact h1 {
+    font-size: clamp(2.2rem, 5vw, 3.3rem);
+    max-width: 12ch;
+  }
+
+  .contact__meta {
+    margin: var(--space-lg) 0 0;
+    display: grid;
+    gap: 1rem;
+  }
+
+  .contact__meta dt {
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-sea);
+  }
+
+  .contact__meta dd {
+    margin: 0.25rem 0 0;
+  }
+
+  @media (max-width: 860px) {
+    .contact__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
