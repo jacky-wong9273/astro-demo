@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" role="img" aria-label="ABC Company">
+  <rect width="64" height="64" rx="12" fill="#0F766E"/>
+  <path d="M18 42L26.5 18h5L40 42h-5.2l-1.5-4.6H24.7L23.2 42H18zm8.1-8.6h5.6L29 24.2l-2.9 9.2zM44 18h5v24h-5V18z" fill="#fff"/>
+</svg>

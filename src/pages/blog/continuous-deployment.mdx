@@ -1,0 +1,38 @@
+---
+title: "Continuous deployment to Amazon S3"
+description: "How this repo builds with npm and syncs dist/ to S3 using GitHub Actions."
+pubDate: "2026-04-02"
+author: "Casey Rivera"
+layout: ../../layouts/MDXLayout.astro
+---
+
+import Callout from '../../components/Callout.astro';
+
+Static sites shine when shipping is boring: push to `main`, wait for CI, refresh the live URL.
+
+## Pipeline overview
+
+1. GitHub Actions checks out the repo.
+2. Node.js is set up and dependencies install with `npm ci`.
+3. `npm run build` outputs HTML, CSS, and assets into `dist/`.
+4. The workflow syncs `dist/` to your S3 bucket.
+5. Optional: invalidate a CloudFront distribution so caches refresh.
+
+## Secrets you will configure
+
+Copy `.env.example` for local naming conventions, then store real values in **GitHub → Settings → Secrets and variables → Actions**:
+
+- `AWS_ACCESS_KEY_ID`
+- `AWS_SECRET_ACCESS_KEY`
+- `AWS_REGION`
+- `AWS_S3_BUCKET`
+- `AWS_CLOUDFRONT_DISTRIBUTION_ID` (optional)
+- `PUBLIC_SITE_URL` (optional build-time public URL)
+
+<Callout title="Security reminder" tone="warn">
+  Never commit real AWS keys. Keep `.env` gitignored and rotate credentials if they leak.
+</Callout>
+
+## Verify after deploy
+
+Open the S3 website endpoint (or CloudFront URL). You should see the ABC Company homepage. Edit an MDX post, push again, and confirm the Actions run updates the bucket.

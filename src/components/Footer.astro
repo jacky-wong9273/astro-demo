@@ -1,0 +1,77 @@
+---
+const companyName = import.meta.env.PUBLIC_COMPANY_NAME || 'ABC Company';
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="site-footer__inner container">
+    <div class="site-footer__brand">
+      <p class="site-footer__name">{companyName}</p>
+      <p class="site-footer__tagline">
+        A fictioned teaching brand for learning Astro, MDX, and static deployment.
+      </p>
+    </div>
+
+    <nav class="site-footer__nav" aria-label="Footer">
+      <a href="/about/">About</a>
+      <a href="/services/">Services</a>
+      <a href="/blog/">Blog</a>
+      <a href="/contact/">Contact</a>
+    </nav>
+
+    <p class="site-footer__copy">© {year} {companyName}. Demo content for education only.</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    margin-top: auto;
+    border-top: 1px solid var(--color-border);
+    background: rgba(14, 23, 31, 0.96);
+    color: #d7e2ea;
+  }
+
+  .site-footer__inner {
+    padding-block: var(--space-xl);
+    display: grid;
+    gap: var(--space-lg);
+  }
+
+  .site-footer__name {
+    margin: 0 0 0.4rem;
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  .site-footer__tagline {
+    margin: 0;
+    max-width: 34rem;
+    color: rgba(215, 226, 234, 0.78);
+    font-size: 0.95rem;
+  }
+
+  .site-footer__nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem 1.4rem;
+  }
+
+  .site-footer__nav a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.92rem;
+  }
+
+  .site-footer__nav a:hover {
+    color: var(--color-sea-glow);
+  }
+
+  .site-footer__copy {
+    margin: 0;
+    font-size: 0.85rem;
+    color: rgba(215, 226, 234, 0.55);
+  }
+</style>

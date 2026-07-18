@@ -1,0 +1,73 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ServiceList from '../components/ServiceList.astro';
+import CTA from '../components/CTA.astro';
+
+const companyName = import.meta.env.PUBLIC_COMPANY_NAME || 'ABC Company';
+
+const services = [
+  {
+    name: 'Astro site builds',
+    summary: 'Component-driven marketing pages compiled to static HTML.',
+    outcomes: [
+      'Shared layouts and navigation',
+      'Accessible structure and responsive CSS',
+      'Production build via npm run build',
+    ],
+  },
+  {
+    name: 'MDX content systems',
+    summary: 'Author blog posts and docs as Markdown with optional components.',
+    outcomes: [
+      'Frontmatter for title, date, and author',
+      'Reusable callout components inside posts',
+      'Content that stays easy for students to edit',
+    ],
+  },
+  {
+    name: 'Continuous deployment to S3',
+    summary: 'Push to main, build in GitHub Actions, sync dist/ to an S3 bucket.',
+    outcomes: [
+      'IAM user with least-privilege S3 access',
+      'Optional CloudFront invalidation',
+      'Environment variables documented in .env.example',
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title={`Services · ${companyName}`}
+  description={`${companyName} demo services: Astro builds, MDX content, and S3 continuous deployment.`}
+>
+  <section class="page-hero section">
+    <div class="container">
+      <p class="section__eyebrow">Services</p>
+      <h1 class="page-hero__title">What {companyName} “sells” in this demo</h1>
+      <p class="section__lead">
+        These offerings are fictioned for teaching. Each one maps to a concrete part of the repo
+        you can open, edit, and redeploy.
+      </p>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top: 0;">
+    <div class="container">
+      <ServiceList services={services} />
+    </div>
+  </section>
+
+  <CTA
+    title="Want the deployment checklist?"
+    text="The project README walks through npm setup, AWS bucket hosting, GitHub Secrets, and the Actions workflow."
+    ctaLabel="Contact the demo team"
+    ctaHref="/contact/"
+  />
+</BaseLayout>
+
+<style>
+  .page-hero__title {
+    font-size: clamp(2.2rem, 5vw, 3.4rem);
+    max-width: 16ch;
+  }
+</style>

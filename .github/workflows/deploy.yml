@@ -1,0 +1,120 @@
+name: CI and Deploy to Amazon S3
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  NODE_VERSION: "22"
+
+jobs:
+  build:
+    name: Install and build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build static site
+        run: npm run build
+        env:
+          PUBLIC_SITE_URL: ${{ vars.PUBLIC_SITE_URL || 'http://localhost:4321' }}
+          PUBLIC_COMPANY_NAME: ${{ vars.PUBLIC_COMPANY_NAME || 'ABC Company' }}
+          PUBLIC_CONTACT_EMAIL: ${{ vars.PUBLIC_CONTACT_EMAIL || 'hello@abccompany.example' }}
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: site-dist
+          path: dist
+          if-no-files-found: error
+          retention-days: 7
+
+  deploy:
+    name: Deploy dist/ to Amazon S3
+    needs: build
+    # Pull requests only build. Deploys run on pushes to main or manual workflow_dispatch.
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: ${{ vars.PUBLIC_SITE_URL }}
+
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: site-dist
+          path: dist
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Sync static files to S3
+        env:
+          AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+          AWS_S3_PREFIX: ${{ secrets.AWS_S3_PREFIX }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "${AWS_S3_BUCKET}" ]; then
+            echo "Missing secret AWS_S3_BUCKET. Add it under repository Settings → Secrets and variables → Actions."
+            exit 1
+          fi
+
+          TARGET="s3://${AWS_S3_BUCKET}"
+          if [ -n "${AWS_S3_PREFIX:-}" ]; then
+            TARGET="${TARGET}/${AWS_S3_PREFIX}"
+          fi
+
+          echo "Deploying ./dist to ${TARGET}"
+
+          # Fingerprinted assets can be cached aggressively.
+          aws s3 sync ./dist "${TARGET}" \
+            --delete \
+            --exclude "*.html" \
+            --cache-control "public,max-age=31536000,immutable"
+
+          # HTML should revalidate quickly after each deploy.
+          aws s3 sync ./dist "${TARGET}" \
+            --exclude "*" \
+            --include "*.html" \
+            --cache-control "public,max-age=60,must-revalidate"
+
+      - name: Invalidate CloudFront cache (optional)
+        env:
+          AWS_CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.AWS_CLOUDFRONT_DISTRIBUTION_ID }}
+        run: |
+          set -euo pipefail
+          if [ -z "${AWS_CLOUDFRONT_DISTRIBUTION_ID:-}" ]; then
+            echo "No AWS_CLOUDFRONT_DISTRIBUTION_ID secret set — skipping cache invalidation."
+            exit 0
+          fi
+          aws cloudfront create-invalidation \
+            --distribution-id "${AWS_CLOUDFRONT_DISTRIBUTION_ID}" \
+            --paths "/*"

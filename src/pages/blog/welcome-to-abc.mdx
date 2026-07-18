@@ -1,0 +1,29 @@
+---
+title: "Welcome to ABC Company"
+description: "Why this fictioned brand exists and how students can explore the Astro demo."
+pubDate: "2026-03-01"
+author: "Avery Chen"
+layout: ../../layouts/MDXLayout.astro
+---
+
+import Callout from '../../components/Callout.astro';
+
+**ABC Company** is not a real business. It is a teaching brand packaged as a static website so you can see Astro pages, shared components, and MDX articles working together.
+
+## What you should notice
+
+1. The homepage hero puts the brand name first, then one headline and one short supporting sentence.
+2. Navigation and footer live in reusable Astro components.
+3. This article is an `.mdx` file — Markdown with the ability to import components.
+
+<Callout title="Try this" tone="tip">
+  Duplicate this file, change the frontmatter, and restart `npm run dev` to see a new post appear on the Blog index.
+</Callout>
+
+## How content flows
+
+- Frontmatter (`title`, `description`, `pubDate`, `author`) feeds the layout.
+- The `layout` field wraps the MDX body in `MDXLayout.astro`.
+- The Blog index page reads every MDX file under `src/pages/blog/` (except `index.astro`).
+
+When you are ready to publish, run `npm run build` and deploy the `dist/` folder — locally with `npm run preview`, or automatically to Amazon S3 through GitHub Actions.
